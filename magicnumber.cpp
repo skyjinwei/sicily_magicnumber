@@ -7,171 +7,167 @@ using namespace std;
 
 typedef struct
 {
-	int x, y;    //x±íÊ¾µÚÒ»ĞĞµÄÊı£¬y±íÊ¾µÚ¶şĞĞµÄÊı
-	string op;  //´æ´¢ABC²Ù×÷
+    int x, y;    //xè¡¨ç¤ºç¬¬ä¸€è¡Œçš„æ•°ï¼Œyè¡¨ç¤ºç¬¬äºŒè¡Œçš„æ•°
+    string op;  //å­˜å‚¨ABCæ“ä½œ
 }Node;
 
 Node start;
 Node final;
 bool isvisit[45000];
-Node array[max]; //¶¨ÒåÒ»¸öÊı×é×÷Îª¶ÓÁĞ
+Node array[max]; //å®šä¹‰ä¸€ä¸ªæ•°ç»„ä½œä¸ºé˜Ÿåˆ—
 
 void Operate(Node *node, int type)
 {
-	if(type == 1)   //½øĞĞA²Ù×÷£¬ÉÏÏÂĞĞ»¥»»
-	{
-		int swap = node->x;
-		node->x = node->y;
-		node->y = swap;
+    if(type == 1)   //è¿›è¡ŒAæ“ä½œï¼Œä¸Šä¸‹è¡Œäº’æ¢
+    {
+        int swap = node->x;
+        node->x = node->y;
+        node->y = swap;
 
-		node->op = node->op + 'A'; //¸øop×Ö·û´®¼ÓÉÏA
-	}
-	
-	else if (type == 2)
-	{
-		node->x = (node->x % 10) * 1000 + node->x / 10;
-		node->y = (node->y % 10) * 1000 + node->y / 10;
+        node->op = node->op + 'A'; //ç»™opå­—ç¬¦ä¸²åŠ ä¸ŠA
+    }
+    
+    else if (type == 2)
+    {
+        node->x = (node->x % 10) * 1000 + node->x / 10;
+        node->y = (node->y % 10) * 1000 + node->y / 10;
 
-		node->op = node->op + 'B';
-	}
+        node->op = node->op + 'B';
+    }
 
-	else if (type == 3)
-	{
-		int i = node->x / 1000 * 1000;
-		int j = node->x - i;
-		int a = j / 100;
-		int b = (j - a * 100)/10;
-		int i1 = node->y / 1000 * 1000;
-		int j1 = node->y - i1;
-		int c = j1 / 100;
-		int d = (j1 - c * 100)/10;
-		node->x = i + c*100 + a*10 + node->x%10;
-		node->y = i1 + d*100 + b*10 + node->y%10;
+    else if (type == 3)
+    {
+        int i = node->x / 1000 * 1000;
+        int j = node->x - i;
+        int a = j / 100;
+        int b = (j - a * 100)/10;
+        int i1 = node->y / 1000 * 1000;
+        int j1 = node->y - i1;
+        int c = j1 / 100;
+        int d = (j1 - c * 100)/10;
+        node->x = i + c*100 + a*10 + node->x%10;
+        node->y = i1 + d*100 + b*10 + node->y%10;
 
-		node->op = node->op + 'C';
-	}
+        node->op = node->op + 'C';
+    }
 }
 
-bool is_final(Node node)   //ÅĞ¶ÏÊÇ·ñÒÑ¾­³É¹¦
+bool is_final(Node node)   //åˆ¤æ–­æ˜¯å¦å·²ç»æˆåŠŸ
 {
-	if(node.x == final.x && node.y == final.y)
-		return true;
-	return false;
+    if(node.x == final.x && node.y == final.y)
+        return true;
+    return false;
 }
 
-int cantor(int n, int size) //²ÎÊınÎªÒªÇó¿µÍĞÕ¹¿ªµÄÊı£¬sizeÎªÈ«ÅÅÁĞµÄÎ»Êı
+int cantor(int n, int size) //å‚æ•°nä¸ºè¦æ±‚åº·æ‰˜å±•å¼€çš„æ•°ï¼Œsizeä¸ºå…¨æ’åˆ—çš„ä½æ•°
 {
-	int arr[8];
-	int f[] = {1,1,2,6,24,120,720,5040,40320};
-	int sum = 0;
+    int arr[8];
+    int f[] = {1,1,2,6,24,120,720,5040,40320};
+    int sum = 0;
+    
+    for (int i = size -1; i >= 0; i--) //å°†nçš„å„ä¸ªä½ä¸Šçš„æ•°å­˜åˆ°arrä¸­
+    {
+        arr[i] = n % 10;
+        n /= 10;
+    }
+    //æ±‚åº·æ‰˜å±•å¼€
+    for (int i = 0; i < size - 1; i++)
+    {
+        int counter = 0;
+        for(int j = i+1; j < size; j++)
+            if(arr[i] > arr[j])
+                counter++;
+        sum += f[size- i-1] * counter;
+    }
 
-	for (int i = size -1; i >= 0; i--) //½«nµÄ¸÷¸öÎ»ÉÏµÄÊı´æµ½arrÖĞ
-	{
-		arr[i] = n % 10;
-		n /= 10;
-	}
-	//Çó¿µÍĞÕ¹¿ª
-	for (int i = 0; i < size - 1; i++)
-	{
-		int counter = 0;
-		for(int j = i+1; j < size; j++)
-			if(arr[i] > arr[j])
-				counter++;
-		sum += f[size- i-1] * counter;
-	}
-
-	return sum;
+    return sum;
 }
 
 int main()
 {
-	int n; //²»³¬¹ıµÄ²½Êı
-	
-	start.x = 1234;
-	start.y = 8765;
-	start.op = "";
-	
-	while(cin>>n && n != -1)
-	{   
-		//Node array[max];  //¶¨ÒåÒ»¸öÊı×é×÷Îª¶ÓÁĞ
-		final.x = 0;
-		final.y = 0;
-		for (int i = 0; i < 45000; i++ )
-		{
-			isvisit[i] = 0;
-		}
-		for (int i = 0; i < max-1; i++)
-		{
-			array[i].x = 0;
-			array[i].y = 0;
-		}
-		int fp = 0;
-		int rp = 0; //fp,rp·Ö±ğÖ¸Ïò¶ÓÁĞÍ·ºÍÎ²
+    int n; //ä¸è¶…è¿‡çš„æ­¥æ•°
+    
+    start.x = 1234;
+    start.y = 8765;
+    start.op = "";
+   
+    while(cin>>n && n != -1)
+    {   
+        //Node array[max];  //å®šä¹‰ä¸€ä¸ªæ•°ç»„ä½œä¸ºé˜Ÿåˆ—
+        final.x = 0;
+        final.y = 0;
+        for (int i = 0; i < 45000; i++ )
+        {
+            isvisit[i] = 0;
+        }
+        for (int i = 0; i < max-1; i++)
+        {
+            array[i].x = 0;
+            array[i].y = 0;
+        }
+        int fp = 0;
+        int rp = 0; //fp,rpåˆ†åˆ«æŒ‡å‘é˜Ÿåˆ—å¤´å’Œå°¾
 
-		bool sign = false;//ÅĞ¶Ï½áÊøµÄ±êÊ¶
-		int num; //ÊäÈë¾ØÕó
-		Node top,temp;
-		
-		//ÊäÈëµÚÒ»ĞĞµÄÊı£¬½«4¸öÊı×ª»¯ÎªÒ»¸öËÄÎ»Êı
-		for (int i = 0; i < 4; i++)
-		{
-			cin>>num;
-			final.x *= 10;
-			final.x += num;
-		}
-		//ÊäÈëµÚ¶şĞĞµÄÊı£¬½«4¸öÊı×ª»¯ÎªÒ»¸öËÄÎ»Êı
-		for (int i = 0; i < 4; i++)
-		{
-			cin>>num;
-			final.y *= 10;
-			final.y += num;
-		}
-		//cout<<"finalÎª£º"<<final.x<<final.y<<endl;
-		array[fp] = start; //startÈë¶Ó
-		//cout<<"startÒÑÈë¶Ó"<<endl;
-		rp++;
+        bool sign = false;//åˆ¤æ–­ç»“æŸçš„æ ‡è¯†
+        int num; //è¾“å…¥çŸ©é˜µ
+        Node top,temp;
+        
+        //è¾“å…¥ç¬¬ä¸€è¡Œçš„æ•°ï¼Œå°†4ä¸ªæ•°è½¬åŒ–ä¸ºä¸€ä¸ªå››ä½æ•°
+        for (int i = 0; i < 4; i++)
+        {
+            cin>>num;
+            final.x *= 10;
+            final.x += num;
+        }
+        //è¾“å…¥ç¬¬äºŒè¡Œçš„æ•°ï¼Œå°†4ä¸ªæ•°è½¬åŒ–ä¸ºä¸€ä¸ªå››ä½æ•°
+        for (int i = 0; i < 4; i++)
+        {
+            cin>>num;
+            final.y *= 10;
+            final.y += num;
+        }
+       
+        array[fp] = start; //startå…¥é˜Ÿ
+        rp++;
 
-		while(fp != rp)   //¶ÓÁĞ·Ç¿Õ
-		{
-			
-			top = array[fp];//È¡¶ÓÊ×ÔªËØ
+        while(fp != rp)   //é˜Ÿåˆ—éç©º
+        {
+            
+            top = array[fp];//å–é˜Ÿé¦–å…ƒç´ 
 
-			//ÅĞ¶ÏÊÇ·ñ³¬¹ı¸ø¶¨µÄ³¤¶È
-			if (top.op.size() > n)
-				break;
-			else if (is_final(top))
-			{
-				sign = true;
-				break;
-			}
-			//½øĞĞABC²Ù×÷
-			for (int i = 1; i < 4; i++)
-			{
-				temp = top;
-				//cout<<"Ô­ĞòÁĞÎª£º"<<temp.x<<temp.y<<endl;
-				Operate(&temp, i);  //Ê×ÏÈ½øĞĞA²Ù×÷
-				//cout<<"A²Ù×÷"<<temp.x<<temp.y<<endl;
-				num = cantor(temp.x * 10000 + temp.y, 8);//µ±Ç°µÄ¶ÓÊ×ÔªËØÎªtop¸øÁËtemp½øĞĞ¿µÍĞÕ¹¿ª
-				//ÅĞ¶Ï¸Ã×´Ì¬ÊÇ·ñ±»·ÃÎÊ¹ı£¬Èç¹ûÃ»ÓĞ±»·ÃÎÊ¹ı£¬Ôò½«ÆäÉèÎªÒÑ·ÃÎÊ£¬²¢½«¸Ã×´Ì¬Èë¶Ó
-				if (!isvisit[num])
-				{
-					isvisit[num] = true;  
-					array[rp++] = temp;//Ã»ÓĞ·ÃÎÊ¹ıÈë¶Ó
-					//cout<<"tempÈë¶Ó"<<endl;
-				}
-			}
-			fp++;  //É¾³ı¶ÓÊ×ÔªËØ
-		}
-		if(sign)
-		{
-			if(top.op.size() == 0)
-				cout<<"0"<<endl;
-			else
-				cout<<top.op.size()<<" "<<top.op<<endl;
-		}
-		else
-			cout<<-1<<endl;
-	}
-	
-	return 0;
-}
+            //åˆ¤æ–­æ˜¯å¦è¶…è¿‡ç»™å®šçš„é•¿åº¦
+            if (top.op.size() > n)
+                break;
+            else if (is_final(top))
+            {
+                sign = true;
+                break;
+            }
+            //è¿›è¡ŒABCæ“ä½œ
+            for (int i = 1; i < 4; i++)
+            {
+                temp = top;
+                Operate(&temp, i);  //é¦–å…ˆè¿›è¡ŒAæ“ä½œ
+                num = cantor(temp.x * 10000 + temp.y, 8);//å½“å‰çš„é˜Ÿé¦–å…ƒç´ ä¸ºtopç»™äº†tempè¿›è¡Œåº·æ‰˜å±•å¼€
+                //åˆ¤æ–­è¯¥çŠ¶æ€æ˜¯å¦è¢«è®¿é—®è¿‡ï¼Œå¦‚æœæ²¡æœ‰è¢«è®¿é—®è¿‡ï¼Œåˆ™å°†å…¶è®¾ä¸ºå·²è®¿é—®ï¼Œå¹¶å°†è¯¥çŠ¶æ€å…¥é˜Ÿ
+                if (!isvisit[num])
+                {
+                    isvisit[num] = true;  
+                    array[rp++] = temp;//æ²¡æœ‰è®¿é—®è¿‡å…¥é˜Ÿ
+                }
+            }
+            fp++;  //åˆ é™¤é˜Ÿé¦–å…ƒç´ 
+        }
+        if(sign)
+        {
+            if(top.op.size() == 0)
+                cout<<"0"<<endl;
+            else
+                cout<<top.op.size()<<" "<<top.op<<endl;
+        }
+        else
+            cout<<-1<<endl;
+    }
+    
+    return 0;
+}                                 
